@@ -27,6 +27,12 @@ And if you want you dev dependencies to be included also, use
 $ tplgen THIRD-PARTY-LICENSES.txt --withDev
 ```
 
+If you also want all the licenses of the dependencies that your dependencies used then use the `--depOfdep` flag.
+
+```
+$ tplgen THIRD-PARTY-LICENSES.txt --depOfdep
+```
+
 ## LICENSE
 
 [MIT](LICENSE)
