@@ -75,10 +75,11 @@ function generate(withDevDependencies) {
 
 function makeThirdPartyLicenseFile(licenseFile, withDevDependencies) {
   const result = generate(withDevDependencies);
-  let writeData = '';
+  let writeData = 'This application bundles the following third-party packages in accordance'
+  writeData += '\nwith the following licenses:\n'
   for (let i = 0; i < result.length; i++){
     const dependency = result[i]
-    writeData += `${'-'.repeat(42)}\n`;
+    writeData += `${'-'.repeat(73)}\n`;
     writeData += `Package: ${dependency.name}@${dependency.version}\n`;
     writeData += `License: ${dependency.license.name}\n`;
     writeData += `License Source: ${dependency.license.source}\n`;
