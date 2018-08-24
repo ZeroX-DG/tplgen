@@ -20,4 +20,4 @@ const cli = meow(help, {
   }
 })
 
-generate(cli.input, cli.flags.withDev)
+generate(cli.input[0], cli.flags.withDev)

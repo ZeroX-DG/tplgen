@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A nodejs third party licenses generator",
   "bin": {
-    "tplgen": "./cli"
+    "tplgen": "./cli.js"
   },
   "scripts": {
     "test": "xo",

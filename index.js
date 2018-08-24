@@ -42,10 +42,8 @@ function getLicense(dependencyFolder) {
 
 function generate(withDevDependencies) {
   const result = [];
-  fs.readFile(packageFile, (err, packageData) => {
-    if (err) {
-      throw err;
-    }
+  try {
+    const packageData = fs.readFileSync(packageFile);
     const pkg = JSON.parse(packageData);
     const {dependencies} = pkg;
     for (const dependency of Object.keys(dependencies)) {
@@ -69,23 +67,27 @@ function generate(withDevDependencies) {
         });
       }
     }
-  });
+  } catch (error) {
+    throw error
+  }
   return result;
 }
 
 function makeThirdPartyLicenseFile(licenseFile, withDevDependencies) {
   const result = generate(withDevDependencies);
   let writeData = '';
-  result.forEach(dependency => {
-    writeData += `${'-'.repeat(32)}\n`;
+  for (let i = 0; i < result.length; i++){
+    const dependency = result[i]
+    writeData += `${'-'.repeat(42)}\n`;
     writeData += `Package: ${dependency.name}@${dependency.version}\n`;
     writeData += `License: ${dependency.license.name}\n`;
     writeData += `License Source: ${dependency.license.source}\n`;
     if (dependency.license.sourceText) {
-      writeData += `\nSourceText:\n`;
+      writeData += `\nSourceText:\n\n`;
       writeData += dependency.license.sourceText;
+      writeData += '\n'
     }
-  });
+  };
   fs.writeFileSync(licenseFile, writeData);
 }
 
