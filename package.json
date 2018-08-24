@@ -4,7 +4,8 @@
   "description": "A nodejs third party licenses generator",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "xo",
+    "fix": "xo --fix"
   },
   "keywords": [
     "license",
@@ -16,5 +17,11 @@
   "license": "MIT",
   "dependencies": {
     "meow": "^5.0.0"
+  },
+  "devDependencies": {
+    "xo": "^0.22.0"
+  },
+  "xo": {
+    "space": true
   }
 }
