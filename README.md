@@ -37,6 +37,10 @@ $ tplgen THIRD-PARTY-LICENSES.txt --depOfdep
 
 - [Hung Nguyen](https://github.com/ZeroX-DG)([twitter](https://twitter.com/ZeroX_Hung))
 
+## Donate me
+
+<a href="https://www.buymeacoffee.com/hQteV8A" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 ## LICENSE
 
 [MIT](LICENSE)
