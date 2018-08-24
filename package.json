@@ -2,7 +2,9 @@
   "name": "tplgen",
   "version": "1.0.0",
   "description": "A nodejs third party licenses generator",
-  "main": "index.js",
+  "bin": {
+    "tplgen": "./cli"
+  },
   "scripts": {
     "test": "xo",
     "fix": "xo --fix"
