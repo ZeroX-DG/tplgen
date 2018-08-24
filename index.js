@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const cwd = process.cwd();
 const nodeModules = path.join(cwd, 'node_modules');
 let packageLoss = 0;
+let allLicenses = {}
 
 function getLicense(dependencyFolder) {
   const licenseFiles = [
@@ -27,7 +28,8 @@ function getLicense(dependencyFolder) {
     if (fs.existsSync(licenseFilePath)) {
       licenseSource = file;
       licenseText = fs.readFileSync(licenseFilePath);
-      license = packageFileData.license;
+      license = packageFileData.license || 'No License';
+      allLicenses[license] = allLicenses[license] ? allLicenses[license] + 1 : 1;
       return {
         name: license,
         source: licenseSource,
@@ -35,6 +37,8 @@ function getLicense(dependencyFolder) {
       };
     }
   }
+  license = packageFileData.license || 'No License';
+  allLicenses[license] = allLicenses[license] ? allLicenses[license] + 1 : 1;
   return {
     name: packageFileData.license,
     source: 'package.json'
@@ -109,9 +113,13 @@ function makeThirdPartyLicenseFile(licenseFile, withDevDependencies, depOfdep) {
   };
   fs.writeFileSync(licenseFile, writeData);
   console.log(' ' + chalk.blue.underline('Result:'));
-  console.log(chalk.green(` ● ${totalPackages} package licenses added`))
-  console.log(chalk.red(` ● ${packageLoss} packages loss`))
+  console.log(chalk.green(` ● ${totalPackages} package licenses added`));
+  console.log(chalk.red(` ● ${packageLoss} packages loss`));
   console.timeEnd(chalk.blue(' ● Finished after'));
+  console.log(` ${chalk.yellow('Summary')}`);
+  for (const license in allLicenses) {
+    console.log(`  ● ${chalk.blue(license)}: ${allLicenses[license]}`)
+  }
 }
 
 module.exports = makeThirdPartyLicenseFile;
