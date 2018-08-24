@@ -33,10 +33,10 @@ If you also want all the licenses of the dependencies that your dependencies use
 $ tplgen THIRD-PARTY-LICENSES.txt --depOfdep
 ```
 
-## LICENSE
-
-[MIT](LICENSE)
-
 ## Author
 
 - [Hung Nguyen](https://github.com/ZeroX-DG)([twitter](https://twitter.com/ZeroX_Hung))
+
+## LICENSE
+
+[MIT](LICENSE)
