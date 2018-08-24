@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const cwd = process.cwd();
-const packageFile = path.join(cwd, 'package.json');
 const nodeModules = path.join(cwd, 'node_modules');
+let packageLoss = 0;
 
 function getLicense(dependencyFolder) {
   const licenseFiles = [
@@ -40,13 +40,15 @@ function getLicense(dependencyFolder) {
   };
 }
 
-function generate(packageFile, withDevDependencies, depOfdep) {
-  const result = [];
+function generate(cwd, withDevDependencies, depOfdep) {
+  let result = [];
   try {
+    const packageFile = path.join(cwd, 'package.json');
     const packageData = fs.readFileSync(packageFile);
     const pkg = JSON.parse(packageData);
     const {dependencies} = pkg;
-    for (const dependency of Object.keys(dependencies)) {
+    const dependencyNames = dependencies ? Object.keys(dependencies) : []
+    for (const dependency of dependencyNames) {
       const dependencyFolder = path.join(nodeModules, dependency);
       const license = getLicense(dependencyFolder);
       result.push({
@@ -55,13 +57,13 @@ function generate(packageFile, withDevDependencies, depOfdep) {
         license
       });
       if (depOfdep) {
-        const depPackage = path.join(dependencyFolder, 'package.json')
-        result.push(generate(depPackage, withDevDependencies, depOfdep))
+        result = result.concat(generate(dependencyFolder, withDevDependencies, depOfdep))
       }
     }
     if (withDevDependencies) {
       const {devDependencies} = pkg;
-      for (const dependency of Object.keys(devDependencies)) {
+      const dependencyNames = dependencies ? Object.keys(devDependencies) : []
+      for (const dependency of dependencyNames) {
         const dependencyFolder = path.join(nodeModules, dependency);
         const license = getLicense(dependencyFolder);
         result.push({
@@ -70,22 +72,29 @@ function generate(packageFile, withDevDependencies, depOfdep) {
           license
         });
         if (depOfdep) {
-          const depPackage = path.join(dependencyFolder, 'package.json')
-          result.push(generate(depPackage, withDevDependencies, depOfdep))
+          result = result.concat(generate(dependencyFolder, withDevDependencies, depOfdep))
         }
       }
     }
   } catch (error) {
-    throw error
+    if (error.code !== 'ENOENT') {
+      throw error
+    } else {
+      // some package is in a special node_modules
+      // like minimist located in electron-download/node_modules
+      packageLoss++
+    }
   }
   return result;
 }
 
 function makeThirdPartyLicenseFile(licenseFile, withDevDependencies, depOfdep) {
-  const result = generate(packageFile, withDevDependencies, depOfdep);
+  console.time(' ● Finished after');
+  const result = generate(cwd, withDevDependencies, depOfdep);
   let writeData = 'This application bundles the following third-party packages in accordance'
   writeData += '\nwith the following licenses:\n'
-  for (let i = 0; i < result.length; i++){
+  const totalPackages = result.length
+  for (let i = 0; i < totalPackages; i++){
     const dependency = result[i]
     writeData += `${'-'.repeat(73)}\n`;
     writeData += `Package: ${dependency.name}@${dependency.version}\n`;
@@ -98,6 +107,10 @@ function makeThirdPartyLicenseFile(licenseFile, withDevDependencies, depOfdep) {
     }
   };
   fs.writeFileSync(licenseFile, writeData);
+  console.log(' ----- Result -----');
+  console.log(` ● ${totalPackages} package licenses added`)
+  console.log(` ● ${packageLoss} packages loss`)
+  console.timeEnd(' ● Finished after');
 }
 
 module.exports = makeThirdPartyLicenseFile;
