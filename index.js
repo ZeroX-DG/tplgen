@@ -40,7 +40,7 @@ function getLicense(dependencyFolder) {
   };
 }
 
-function generate(withDevDependencies) {
+function generate(packageFile, withDevDependencies, depOfdep) {
   const result = [];
   try {
     const packageData = fs.readFileSync(packageFile);
@@ -54,6 +54,10 @@ function generate(withDevDependencies) {
         version: dependencies[dependency],
         license
       });
+      if (depOfdep) {
+        const depPackage = path.join(dependencyFolder, 'package.json')
+        result.push(generate(depPackage, withDevDependencies, depOfdep))
+      }
     }
     if (withDevDependencies) {
       const {devDependencies} = pkg;
@@ -65,6 +69,10 @@ function generate(withDevDependencies) {
           version: devDependencies[dependency],
           license
         });
+        if (depOfdep) {
+          const depPackage = path.join(dependencyFolder, 'package.json')
+          result.push(generate(depPackage, withDevDependencies, depOfdep))
+        }
       }
     }
   } catch (error) {
@@ -73,8 +81,8 @@ function generate(withDevDependencies) {
   return result;
 }
 
-function makeThirdPartyLicenseFile(licenseFile, withDevDependencies) {
-  const result = generate(withDevDependencies);
+function makeThirdPartyLicenseFile(licenseFile, withDevDependencies, depOfdep) {
+  const result = generate(packageFile, withDevDependencies, depOfdep);
   let writeData = 'This application bundles the following third-party packages in accordance'
   writeData += '\nwith the following licenses:\n'
   for (let i = 0; i < result.length; i++){

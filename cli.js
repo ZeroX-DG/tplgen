@@ -4,17 +4,21 @@ const generate = require('.')
 
 const help = `
   Usage
-    $ tplgen <file> [--withDev]
+    $ tplgen <file> [--withDev] [--depOfdep]
   Options
     --withDev  Generate third party license file including dev dependencies
   Examples
     $ tplgen THIRD-PARTY-LICENSES.txt
     $ tplgen THIRD-PARTY-LICENSES.txt --withDev
+    $ tplgen THIRD-PARTY-LICENSES.txt --depOfdep
 `
 
 const cli = meow(help, {
   flags: {
     withDev: {
+      type: 'boolean'
+    },
+    depOfdep: {
       type: 'boolean'
     }
   }
