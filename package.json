@@ -18,6 +18,7 @@
   "author": "Hung Nguyen <viethungax@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.1",
     "meow": "^5.0.0"
   },
   "devDependencies": {

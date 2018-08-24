@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 
 const cwd = process.cwd();
 const nodeModules = path.join(cwd, 'node_modules');
@@ -89,7 +90,7 @@ function generate(cwd, withDevDependencies, depOfdep) {
 }
 
 function makeThirdPartyLicenseFile(licenseFile, withDevDependencies, depOfdep) {
-  console.time(' ● Finished after');
+  console.time(chalk.blue(' ● Finished after'));
   const result = generate(cwd, withDevDependencies, depOfdep);
   let writeData = 'This application bundles the following third-party packages in accordance'
   writeData += '\nwith the following licenses:\n'
@@ -107,10 +108,10 @@ function makeThirdPartyLicenseFile(licenseFile, withDevDependencies, depOfdep) {
     }
   };
   fs.writeFileSync(licenseFile, writeData);
-  console.log(' ----- Result -----');
-  console.log(` ● ${totalPackages} package licenses added`)
-  console.log(` ● ${packageLoss} packages loss`)
-  console.timeEnd(' ● Finished after');
+  console.log(' ' + chalk.blue.underline('Result:'));
+  console.log(chalk.green(` ● ${totalPackages} package licenses added`))
+  console.log(chalk.red(` ● ${packageLoss} packages loss`))
+  console.timeEnd(chalk.blue(' ● Finished after'));
 }
 
 module.exports = makeThirdPartyLicenseFile;
